@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Алексей Мелешко](https://up.htmlacademy.ru/ecmascript/12/user/1454929).
-* Наставник: `Неизвестно`.
+* Наставник: [Владислав Поляков](https://htmlacademy.ru/profile/id1548493).
 
 ---
 
