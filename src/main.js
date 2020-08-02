@@ -1,4 +1,4 @@
-'use strict';
+
 const FILM_LISTS_COUNT = 5;
 const MAX_EXTRA_FILMS = 2;
 const createSiteNavigationTemplate = () => {
