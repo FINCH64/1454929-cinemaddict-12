@@ -12,8 +12,8 @@ const createSiteNavigationTemplate = () => {
     </div>
     <a href="#stats" class="main-navigation__additional">Stats</a>
   </nav>`
-  )
-}
+  );
+};
 
 const createSiteFilterTemplate = () => {
   return (
@@ -22,8 +22,8 @@ const createSiteFilterTemplate = () => {
     <li><a href="#" class="sort__button">Sort by date</a></li>
     <li><a href="#" class="sort__button">Sort by rating</a></li>
   </ul>`
-  )
-}
+  );
+};
 
 const createUsersProfileTemplate = () => {
   return (
@@ -31,8 +31,8 @@ const createUsersProfileTemplate = () => {
     <p class="profile__rating">Movie Buff</p>
     <img class="profile__avatar" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
   </section>`
-  )
-}
+  );
+};
 
 const createFilmListsContainerTemplate = () => {
   return (
@@ -45,13 +45,13 @@ const createFilmListsContainerTemplate = () => {
       </div>
     </section>
   </section>`
-  )
-}
+  );
+};
 
 const createShowMoreButtonTemplate = () => {
   return (
     `<button class="films-list__show-more">Show more</button>`
-  )
+  );
 };
 
 const createFilmListTemplate = () => {
@@ -73,8 +73,8 @@ const createFilmListTemplate = () => {
       <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
     </form>
   </article>`
-  )
-}
+  );
+};
 
 const createTopRatedFilmsContainerTemplate = () => {
   return (
@@ -85,8 +85,8 @@ const createTopRatedFilmsContainerTemplate = () => {
 
     </div>
   </section>`
-  )
-}
+  );
+};
 
 const createTopRatedFilmCardTemplate = () => {
   return (
@@ -107,20 +107,20 @@ const createTopRatedFilmCardTemplate = () => {
       <button class="film-card__controls-item button film-card__controls-item--favorite">Mark as favorite</button>
     </form>
   </article>`
-  )
-}
+  );
+};
 
 const createMostCommentedFilmContainerTemplate = () => {
   return (
-   `<section class="films-list--extra">
+    `<section class="films-list--extra">
       <h2 class="films-list__title">Most commented</h2>
 
       <div class="films-list__container">
 
       </div>
     </section>`
-  )
-}
+  );
+};
 
 const createMostCommentedFilmCardTemplate = () => {
   return (
@@ -141,8 +141,8 @@ const createMostCommentedFilmCardTemplate = () => {
       <button class="film-card__controls-item button film-card__controls-item--favorite film-card__controls-item--active">Mark as favorite</button>
     </form>
   </article>`
-  )
-}
+  );
+};
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -154,29 +154,25 @@ render(siteHeaderElement, createUsersProfileTemplate(), `beforeend`);
 render(siteMainElement, createSiteNavigationTemplate(), `beforeend`);
 render(siteMainElement, createSiteFilterTemplate(), `beforeend`);
 render(siteMainElement, createFilmListsContainerTemplate(), `beforeend`);
-var filmsLists = siteMainElement.querySelector(`.films-list`);
+const filmsLists = siteMainElement.querySelector(`.films-list`);
 render(filmsLists, createShowMoreButtonTemplate(), `beforeend`);
-var films = siteMainElement.querySelector(`.films`);
+const films = siteMainElement.querySelector(`.films`);
 let siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
-console.log(siteFilmListsContainer);
-const siteTopRatedFilmListsContainer = siteMainElement.querySelector(`.films-list--extra`);
 
-for (var a = 0; a < FILM_LISTS_COUNT; a++) {
-render(siteFilmListsContainer[0], createFilmListTemplate(), `beforeend`);
+for (let a = 0; a < FILM_LISTS_COUNT; a++) {
+  render(siteFilmListsContainer[0], createFilmListTemplate(), `beforeend`);
 }
 
 render(films, createMostCommentedFilmContainerTemplate(), `beforeend`);
 siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
-console.log(siteFilmListsContainer);
 
-for (let q = 0;q < MAX_EXTRA_FILMS;q++) {
+for (let q = 0; q < MAX_EXTRA_FILMS; q++) {
   render(siteFilmListsContainer[1], createMostCommentedFilmCardTemplate(), `beforeend`);
 }
 
 render(films, createTopRatedFilmsContainerTemplate(), `beforeend`);
 siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
-console.log(siteFilmListsContainer);
 
-for (let q = 0;q < MAX_EXTRA_FILMS;q++) {
+for (let q = 0; q < MAX_EXTRA_FILMS; q++) {
   render(siteFilmListsContainer[2], createTopRatedFilmCardTemplate(), `beforeend`);
 }
