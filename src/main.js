@@ -157,9 +157,9 @@ render(siteMainElement, createFilmListsContainerTemplate(), `beforeend`);
 const filmsLists = siteMainElement.querySelector(`.films-list`);
 render(filmsLists, createShowMoreButtonTemplate(), `beforeend`);
 const films = siteMainElement.querySelector(`.films`);
-const siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
+let siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
 
-for (const a = 0; a < FILM_LISTS_COUNT; a++) {
+for (let a = 0; a < FILM_LISTS_COUNT; a++) {
   render(siteFilmListsContainer[0], createFilmListTemplate(), `beforeend`);
 }
 
