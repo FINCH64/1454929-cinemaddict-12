@@ -10,7 +10,6 @@ import {createSiteFilterTemplate} from './view/film-filters.js';
 const FILM_LISTS_COUNT = 5;
 const MAX_EXTRA_FILMS = 2;
 
-
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
