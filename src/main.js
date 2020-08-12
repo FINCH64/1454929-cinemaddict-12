@@ -24,22 +24,22 @@ render(siteMainElement, createFilmListsContainerTemplate(), `beforeend`);
 const filmsLists = siteMainElement.querySelector(`.films-list`);
 render(filmsLists, createShowMoreButtonTemplate(), `beforeend`);
 const films = siteMainElement.querySelector(`.films`);
-let siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
+const siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
 
 for (let a = 0; a < FILM_LISTS_COUNT; a++) {
   render(siteFilmListsContainer[0], createFilmListTemplate(), `beforeend`);
 }
 
 render(films, createMostCommentedFilmContainerTemplate(), `beforeend`);
-siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
+const sacondSiteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
 
 for (let q = 0; q < MAX_EXTRA_FILMS; q++) {
-  render(siteFilmListsContainer[1], createMostCommentedFilmCardTemplate(), `beforeend`);
+  render(sacondSiteFilmListsContainer[1], createMostCommentedFilmCardTemplate(), `beforeend`);
 }
 
 render(films, createTopRatedFilmsContainerTemplate(), `beforeend`);
-siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
+const thirdSiteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
 
 for (let q = 0; q < MAX_EXTRA_FILMS; q++) {
-  render(siteFilmListsContainer[2], createTopRatedFilmCardTemplate(), `beforeend`);
+  render(thirdSiteFilmListsContainer[2], createTopRatedFilmCardTemplate(), `beforeend`);
 }
