@@ -1,5 +1,4 @@
 /* eslint-disable strict */
-import {testFilms} from "./film-test.js";
 import {getDataByCardNumber} from "./top-rated-films.js";
 let counter = -1;
 let filmCardData = [];
