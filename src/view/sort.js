@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-export const sa = () => {
+export const sortFilterSwitch = () => {
   const siteMainElement = document.querySelector(`.main`);
   const sortButtons = siteMainElement.querySelectorAll(`.sort__button`);
   const disableFilter = (evt) => {

@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import {sa} from './view/sort.js';
+import {sortFilterSwitch} from './view/sort.js';
 import {createUsersProfileTemplate} from './view/user-profile.js';
 import {createTopRatedFilmsContainerTemplate, createTopRatedFilmCardTemplate} from './view/top-rated-films.js';
 import {createSiteNavigationTemplate} from './view/site-navigation.js';
@@ -26,26 +26,26 @@ render(filmsLists, createShowMoreButtonTemplate(), `beforeend`);
 export const films = siteMainElement.querySelector(`.films`);
 export let siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
 
-for (let a = 0; a < FILM_LISTS_COUNT; a++) {
+for (let renderedFilm = 0; renderedFilm < FILM_LISTS_COUNT; renderedFilm++) {
   render(siteFilmListsContainer[0], createFilmListTemplate(), `beforeend`);
 }
 
 render(films, createMostCommentedFilmContainerTemplate(), `beforeend`);
 siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
 
-for (let q = 0; q < MAX_EXTRA_FILMS; q++) {
+for (let renderedCommentedFilm = 0; renderedCommentedFilm < MAX_EXTRA_FILMS; renderedCommentedFilm++) {
   render(siteFilmListsContainer[1], createMostCommentedFilmCardTemplate(), `beforeend`);
 }
 
 render(films, createTopRatedFilmsContainerTemplate(), `beforeend`);
 siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
 
-for (let q = 0; q < MAX_EXTRA_FILMS; q++) {
+for (let renderedRatedFilm = 0; renderedRatedFilm < MAX_EXTRA_FILMS; renderedRatedFilm++) {
   render(siteFilmListsContainer[2], createTopRatedFilmCardTemplate(), `beforeend`);
 }
 export const filmCards = document.querySelectorAll(`.film-card`);
 const footer = document.querySelector(`.footer`);
-sa();
+sortFilterSwitch();
 
 
 const removeFilmDettails = () => {

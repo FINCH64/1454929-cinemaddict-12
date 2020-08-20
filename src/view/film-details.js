@@ -2,8 +2,8 @@ import {testFilms} from "./film-test.js";
 let popupData = [];
 export const siteBody = document.querySelector(`body`);
 export let readyComments = [];
-export const createFilmDetailsTemplate = (evt) => {
-  let filmName = evt.path[1].querySelector(`.film-card__title`).textContent;
+export const createFilmDetailsTemplate = (clickedFilmCard) => {
+  let filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
   for (let testFilm of testFilms) {
     if (testFilm.name === filmName) {
       popupData = testFilm;
@@ -44,8 +44,8 @@ export const createFilmDetailsTemplate = (evt) => {
     );
   };
 
-  for (let i = 0; i < popupData.commentsCount; i++) {
-    readyComments.unshift(createComments(i));
+  for (let unshiftingComment = 0; unshiftingComment < popupData.commentsCount; unshiftingComment++) {
+    readyComments.unshift(createComments(unshiftingComment));
   }
 
 

@@ -1,7 +1,7 @@
 /* eslint-disable strict */
-export const getRandomInteger = (a = 0, b = 5) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
+export const getRandomInteger = (lowestNumber = 0, highestNumber = 5) => {
+  const lower = Math.ceil(Math.min(lowestNumber, highestNumber));
+  const upper = Math.floor(Math.max(lowestNumber, highestNumber));
 
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
@@ -103,7 +103,7 @@ const genres = [
 const generateProperty = (length, fullPropertyArray) => {
   let filmProperty = [];
   if (length > 0) {
-    for (let i = 0; i < length; i++) {
+    for (let counter = 0; counter < length; counter++) {
       const randomIndex = getRandomInteger(0, fullPropertyArray.length - 1);
       filmProperty.unshift(fullPropertyArray[randomIndex]);
     }
@@ -144,7 +144,7 @@ export const generateFilmCard = () => {
 
 export const testFilms = [];
 
-for (let q = 0; q < 18; q++) {
+for (let moksCount = 0; moksCount < 18; moksCount++) {
   testFilms.unshift(generateFilmCard());
 }
 
