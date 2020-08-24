@@ -1,4 +1,5 @@
 /* eslint-disable strict */
+import {createElement} from "./utils.js";
 export const createUsersProfileTemplate = () => {
   return (
     `<section class="header__profile profile">
@@ -7,3 +8,25 @@ export const createUsersProfileTemplate = () => {
   </section>`
   );
 };
+
+export default class UserProfile {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createUsersProfileTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

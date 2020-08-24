@@ -1,15 +1,15 @@
 /* eslint-disable strict */
-import {getDataByCardNumber} from "./top-rated-films.js";
-let counter = -1;
-let filmCardData = [];
+import {createElement} from "./utils.js";
 export let stopFlag = false;
-export const createFilmListTemplate = () => {
-  counter++;
-  filmCardData = getDataByCardNumber(counter);
+export const countOfRenderedFilms = (counter) => {
   if (counter >= 18) {
     stopFlag = true;
-    return ``;
+    return false;
   }
+  return true;
+};
+
+export const createFilmListTemplate = (filmCardData) => {
   return (
     `<article class="film-card">
     <h3 class="film-card__title">` + filmCardData.name + `</h3>
@@ -30,3 +30,27 @@ export const createFilmListTemplate = () => {
   </article>`
   );
 };
+
+export default class Film {
+  constructor(task) {
+    this._task = task;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmListTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

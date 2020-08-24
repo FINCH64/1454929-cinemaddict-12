@@ -1,7 +1,6 @@
 /* eslint-disable strict */
 import {testFilms} from "./film-test.js";
-let counter = -1;
-let filmCardData = [];
+import {createElement} from "./utils.js";
 export const createTopRatedFilmsContainerTemplate = () => {
   return (
     `<section class="films-list--extra">
@@ -15,14 +14,10 @@ export const createTopRatedFilmsContainerTemplate = () => {
 };
 
 export const getDataByCardNumber = (cardNum) => {
-  // console.log(counter);
-  // console.log(filmCardData);
   return testFilms[cardNum];
 };
 
-export const createTopRatedFilmCardTemplate = () => {
-  counter++;
-  filmCardData = getDataByCardNumber(counter);
+export const createTopRatedFilmCardTemplate = (filmCardData) => {
   return (
     `<article class="film-card">
     <h3 class="film-card__title">` + filmCardData.name + `</h3>
@@ -43,3 +38,27 @@ export const createTopRatedFilmCardTemplate = () => {
   </article>`
   );
 };
+
+export default class TopRatedFilm {
+  constructor(task) {
+    this._task = task;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTopRatedFilmCardTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

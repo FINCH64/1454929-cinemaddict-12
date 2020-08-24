@@ -1,4 +1,5 @@
 /* eslint-disable strict */
+import {createElement} from "./utils.js";
 export const createSiteFilterTemplate = () => {
   return (
     `<ul class="sort">
@@ -8,3 +9,25 @@ export const createSiteFilterTemplate = () => {
   </ul>`
   );
 };
+
+export default class FilmsFilters {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteFilterTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

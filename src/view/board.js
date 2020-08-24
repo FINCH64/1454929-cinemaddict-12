@@ -1,18 +1,20 @@
 /* eslint-disable strict */
 import {createElement} from "./utils.js";
-export const createShowMoreButtonTemplate = () => {
+export const createBoardTemplate = () => {
   return (
-    `<button class="films-list__show-more">Show more</button>`
+    `<section class="films-list">
+        <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+      </section>`
   );
 };
 
-export default class LoadMore {
+export default class FullBoard {
   constructor() {
     this._element = null;
   }
 
   getTemplate() {
-    return createShowMoreButtonTemplate();
+    return createBoardTemplate();
   }
 
   getElement() {
@@ -27,4 +29,3 @@ export default class LoadMore {
     this._element = null;
   }
 }
-

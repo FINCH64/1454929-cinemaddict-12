@@ -1,7 +1,5 @@
 /* eslint-disable strict */
-import {getDataByCardNumber} from "./top-rated-films.js";
-let counter = -1;
-let filmCardData = [];
+import {createElement} from "./utils.js";
 export const createMostCommentedFilmContainerTemplate = () => {
   return (
     `<section class="films-list--extra">
@@ -15,9 +13,7 @@ export const createMostCommentedFilmContainerTemplate = () => {
 };
 
 
-export const createMostCommentedFilmCardTemplate = () => {
-  counter++;
-  filmCardData = getDataByCardNumber(counter);
+export const createMostCommentedFilmCardTemplate = (filmCardData) => {
   return (
     `<article class="film-card">
     <h3 class="film-card__title">` + filmCardData.name + `</h3>
@@ -38,3 +34,27 @@ export const createMostCommentedFilmCardTemplate = () => {
   </article>`
   );
 };
+
+export default class MostCommentedFilm {
+  constructor(task) {
+    this._task = task;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMostCommentedFilmCardTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
