@@ -1,7 +1,48 @@
 import {testFilms} from "./film-test.js";
+import {createElement} from "./utils.js";
 let popupData = [];
 export const siteBody = document.querySelector(`body`);
 export let readyComments = [];
+
+const createComments = (clickedFilmCard, num) => {
+  return (
+    `<li class="film-details__comment">
+    <span class="film-details__comment-emoji">
+      <img src="` + popupData.comments[num].emoji + `" width="55" height="55" alt="emoji-smile">
+    </span>
+    <div>
+      <p class="film-details__comment-text">` + popupData.comments[num].text + `</p>
+      <p class="film-details__comment-info">
+        <span class="film-details__comment-author">` + popupData.comments[num].author + `</span>
+        <span class="film-details__comment-day">` + popupData.comments[num].date + `</span>
+        <button class="film-details__comment-delete">Delete</button>
+      </p>
+    </div>
+  </li>`
+  );
+};
+
+const getReadyComments = (clickedFilmCard) => {
+  readyComments = [];
+  readyComments.unshift(`</ul>`);
+  let filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
+  for (let testFilm of testFilms) {
+    if (testFilm.name === filmName) {
+      popupData = testFilm;
+      break;
+    }
+    continue;
+  }
+
+  for (let unshiftingComment = 0; unshiftingComment < popupData.commentsCount; unshiftingComment++) {
+    readyComments.unshift(createComments(filmName, unshiftingComment));
+  }
+  readyComments.unshift(`<ul class="film-details__comments-list">`);
+  return (
+    readyComments.reduce((sum, current) => sum + ` \n\ ` + current)
+  );
+};
+
 export const createFilmDetailsTemplate = (clickedFilmCard) => {
   let filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
   for (let testFilm of testFilms) {
@@ -25,29 +66,6 @@ export const createFilmDetailsTemplate = (clickedFilmCard) => {
   for (let genre of popupData.genre) {
     genresFragment += `<span class="film-details__genre">` + genre + `</span>`;
   }
-
-  const createComments = (num) => {
-    return (
-      `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="` + popupData.comments[num].emoji + `" width="55" height="55" alt="emoji-smile">
-      </span>
-      <div>
-        <p class="film-details__comment-text">` + popupData.comments[num].text + `</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">` + popupData.comments[num].author + `</span>
-          <span class="film-details__comment-day">` + popupData.comments[num].date + `</span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>`
-    );
-  };
-
-  for (let unshiftingComment = 0; unshiftingComment < popupData.commentsCount; unshiftingComment++) {
-    readyComments.unshift(createComments(unshiftingComment));
-  }
-
 
   return (
     `<section class="film-details">
@@ -129,9 +147,6 @@ export const createFilmDetailsTemplate = (clickedFilmCard) => {
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">` + popupData.commentsCount + `</span></h3>
 
-        <ul class="film-details__comments-list">
-
-        </ul>
 
         <div class="film-details__new-comment">
           <div for="add-emoji" class="film-details__add-emoji-label"></div>
@@ -168,4 +183,41 @@ export const createFilmDetailsTemplate = (clickedFilmCard) => {
 </section> `
   );
 };
+
+export default class FilmDetails {
+  constructor(clickedCard) {
+    this._clickedFilm = clickedCard;
+    this._filmData = null;
+    this._comment = null;
+  }
+
+  getDetailsTemplate() {
+    return createFilmDetailsTemplate(this._clickedFilm);
+  }
+
+  getElement() {
+    if (!this._filmData) {
+      this._filmData = createElement(this.getDetailsTemplate());
+    }
+
+    return this._filmData;
+  }
+
+  getCommentsTemplate() {
+    return getReadyComments(this._clickedFilm);
+  }
+
+  getComments() {
+    this._comment = createElement(this.getCommentsTemplate());
+    return this._comment;
+  }
+
+  removeElement() {
+    this._clickedFilm = null;
+    this._filmData = null;
+    this._comment = null;
+    let filmDetails = document.querySelector(`.film-details`);
+    filmDetails.remove();
+  }
+}
 

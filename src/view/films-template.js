@@ -34,7 +34,6 @@ export const createFilmListTemplate = (filmCardData) => {
 export default class Film {
   constructor(task) {
     this._task = task;
-
     this._element = null;
   }
 

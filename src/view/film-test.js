@@ -25,37 +25,37 @@ const emojis = [
 
 const comments = [
   {
-    emoji: emojis[getRandomInteger(0, 4)],
+    emoji: emojis[getRandomInteger(0, 3)],
     text: `a`,
     author: `James Cameron`,
     date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
   },
   {
-    emoji: emojis[getRandomInteger(0, 4)],
+    emoji: emojis[getRandomInteger(0, 3)],
     text: `b`,
     author: `Someone else`,
     date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
   },
   {
-    emoji: emojis[getRandomInteger(0, 4)],
+    emoji: emojis[getRandomInteger(0, 3)],
     text: `c`,
     author: `Stiven King`,
     date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
   },
   {
-    emoji: emojis[getRandomInteger(0, 4)],
+    emoji: emojis[getRandomInteger(0, 3)],
     text: `d`,
     author: `William Shakespeare`,
     date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
   },
   {
-    emoji: emojis[getRandomInteger(0, 4)],
+    emoji: emojis[getRandomInteger(0, 3)],
     text: `e`,
     author: `Jonathan Swift`,
     date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
   },
   {
-    emoji: emojis[getRandomInteger(0, 4)],
+    emoji: emojis[getRandomInteger(0, 3)],
     text: `f`,
     author: `JENNIFER LAWRENCE`,
     date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),

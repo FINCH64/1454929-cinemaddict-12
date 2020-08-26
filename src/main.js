@@ -13,7 +13,8 @@ import FullBoard from './view/board.js';
 import FilmsContainer from "./view/films-container.js";
 import FilmsFilters from './view/film-filters.js';
 import AllFilmsBoard from './view/all-films-board.js';
-import {createFilmDetailsTemplate, siteBody, readyComments} from './view/film-details.js';
+import {siteBody} from './view/film-details.js';
+import FilmDetails from './view/film-details.js';
 import {renderTemplate, renderElement, RenderPosition} from "./view/utils.js";
 export const siteMainElement = document.querySelector(`.main`);
 export const FILM_LISTS_COUNT = 5;
@@ -57,7 +58,7 @@ siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__containe
 for (let renderedCommentedFilm = 0; renderedCommentedFilm < MAX_EXTRA_FILMS; renderedCommentedFilm++) {
   MostCommentedFilmsCounter++;
   filmData = getDataByCardNumber(MostCommentedFilmsCounter);
-  renderElement(siteFilmListsContainer[1], new MostCommentedFilm(filmData).getElement(), `beforeend`);
+  renderElement(siteFilmListsContainer[1], new MostCommentedFilm(filmData).getElement(), RenderPosition.BEFOREEND);
 }
 
 renderTemplate(films, createTopRatedFilmsContainerTemplate(), `beforeend`);
@@ -66,30 +67,27 @@ siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__containe
 for (let renderedRatedFilm = 0; renderedRatedFilm < MAX_EXTRA_FILMS; renderedRatedFilm++) {
   topRatedFilmsCounter++;
   filmData = getDataByCardNumber(topRatedFilmsCounter);
-  renderElement(siteFilmListsContainer[2], new TopRatedFilm(filmData).getElement(), `beforeend`);
+  renderElement(siteFilmListsContainer[2], new TopRatedFilm(filmData).getElement(), RenderPosition.BEFOREEND);
 }
 export const filmCards = document.querySelectorAll(`.film-card`);
-const footer = document.querySelector(`.footer`);
 sortFilterSwitch();
 
 
-const removeFilmDettails = () => {
-  let filmDetails = document.querySelector(`.film-details`);
-  filmDetails.remove();
+const removeFilmDettails = (pressedFilmDetails) => {
+  pressedFilmDetails.removeElement();
 };
 
 for (let film of filmCards) {
   film.addEventListener(`mouseup`, (evt) => {
-    renderTemplate(footer, createFilmDetailsTemplate(evt), `afterend`);
+    let pressedFilmDetails = new FilmDetails(evt);
+    renderElement(siteBody, pressedFilmDetails.getElement(), RenderPosition.BEFOREEND);
     const popupCloseButton = document.querySelector(`.film-details__close-btn`);
     popupCloseButton.addEventListener(`mouseup`, () => {
-      removeFilmDettails();
+      removeFilmDettails(pressedFilmDetails);
       siteBody.classList.remove(`hide-overflow`);
     }, {once: true});
-    const commentsList = document.querySelector(`.film-details__comments-list`);
-    for (let commentarii of readyComments) {
-      renderTemplate(commentsList, commentarii, `beforeend`);
-    }
+    const commentsTitle = document.querySelector(`.film-details__comments-title`);
+    renderElement(commentsTitle, pressedFilmDetails.getComments(), RenderPosition.AFTEREND);
   });
 }
 
