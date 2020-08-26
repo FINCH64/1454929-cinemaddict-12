@@ -15,6 +15,7 @@ import FilmsFilters from './view/film-filters.js';
 import AllFilmsBoard from './view/all-films-board.js';
 import {siteBody} from './view/film-details.js';
 import FilmDetails from './view/film-details.js';
+import NoMoviesMessage from './view/no-movies.js';
 import {renderTemplate, renderElement, RenderPosition} from "./view/utils.js";
 export const siteMainElement = document.querySelector(`.main`);
 export const FILM_LISTS_COUNT = 5;
@@ -78,16 +79,28 @@ const removeFilmDettails = (pressedFilmDetails) => {
 };
 
 for (let film of filmCards) {
-  film.addEventListener(`mouseup`, (evt) => {
-    let pressedFilmDetails = new FilmDetails(evt);
-    renderElement(siteBody, pressedFilmDetails.getElement(), RenderPosition.BEFOREEND);
-    const popupCloseButton = document.querySelector(`.film-details__close-btn`);
-    popupCloseButton.addEventListener(`mouseup`, () => {
-      removeFilmDettails(pressedFilmDetails);
-      siteBody.classList.remove(`hide-overflow`);
-    }, {once: true});
-    const commentsTitle = document.querySelector(`.film-details__comments-title`);
-    renderElement(commentsTitle, pressedFilmDetails.getComments(), RenderPosition.AFTEREND);
+  film.addEventListener(`mouseup`, (filmCardClick) => {
+    if (filmCardClick.button === 0) {
+      let pressedFilmDetails = new FilmDetails(filmCardClick);
+      renderElement(siteBody, pressedFilmDetails.getElement(), RenderPosition.BEFOREEND);
+      const popupCloseButton = document.querySelector(`.film-details__close-btn`);
+      popupCloseButton.addEventListener(`mouseup`, (closeButtonClicked) => {
+        if (closeButtonClicked.button === 0) {
+          removeFilmDettails(pressedFilmDetails);
+          siteBody.classList.remove(`hide-overflow`);
+        }
+      }, {once: true});
+
+      window.addEventListener(`keydown`, (pressedKey) => {
+        if (pressedKey.key === `Escape`) {
+          removeFilmDettails(pressedFilmDetails);
+          siteBody.classList.remove(`hide-overflow`);
+        }
+      }, {once: true});
+
+      const commentsTitle = document.querySelector(`.film-details__comments-title`);
+      renderElement(commentsTitle, pressedFilmDetails.getComments(), RenderPosition.AFTEREND);
+    }
   });
 }
 
@@ -104,8 +117,12 @@ const loadNewFilms = () => {
     } else {
       loadMoreButton.getElement().remove();
       loadMoreButton.removeElement();
+      filmsLists.remove();
+      renderElement(siteMainElement.querySelector(`.sort`), new NoMoviesMessage().getElement(), RenderPosition.BEFOREEND);
       break;
     }
   }
 };
 loadMoreButton.getElement().addEventListener(`mouseup`, loadNewFilms);
+
+
