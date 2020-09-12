@@ -10,7 +10,6 @@ export const renderElement = (container, element, place) => {
       container.prepend(element);
       break;
     case RenderPosition.BEFOREEND:
-      console.log(element);
       container.append(element);
       break;
     case RenderPosition.AFTEREND:
