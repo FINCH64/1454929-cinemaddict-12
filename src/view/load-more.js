@@ -1,30 +1,16 @@
 /* eslint-disable strict */
-import {createElement} from "./utils.js";
+import AbstractFilm from "../utils/utils.js";
 export const createShowMoreButtonTemplate = () => {
   return (
     `<button class="films-list__show-more">Show more</button>`
   );
 };
 
-export default class LoadMore {
-  constructor() {
-    this._element = null;
-  }
+export default class LoadMore extends AbstractFilm {
 
   getTemplate() {
     return createShowMoreButtonTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
 

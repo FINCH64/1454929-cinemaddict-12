@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import {createElement} from "./utils.js";
+import AbstractFilm from "../utils/utils.js";
 export const createNoMoviesMessage = () => {
   return (
     `<section class="films">
@@ -11,24 +11,10 @@ export const createNoMoviesMessage = () => {
   );
 };
 
-export default class NoMoviesMessage {
-  constructor() {
-    this._element = null;
-  }
+export default class NoMoviesMessage extends AbstractFilm {
 
   getTemplate() {
     return createNoMoviesMessage();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

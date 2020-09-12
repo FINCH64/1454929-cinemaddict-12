@@ -1,5 +1,8 @@
 /* eslint-disable strict */
-import {createElement} from "./utils.js";
+import AbstractFilm from "../utils/utils.js";
+import FilmDetails, {siteBody} from './film-details.js';
+import {renderElement, RenderPosition} from "../utils/render.js";
+import {removeFilmDettails} from '../main.js';
 export const createMostCommentedFilmContainerTemplate = () => {
   return (
     `<section class="films-list--extra">
@@ -35,26 +38,45 @@ export const createMostCommentedFilmCardTemplate = (filmCardData) => {
   );
 };
 
-export default class MostCommentedFilm {
-  constructor(task) {
-    this._task = task;
+export default class MostCommentedFilm extends AbstractFilm {
 
-    this._element = null;
+  constructor(task) {
+    super();
+    this._task = task;
+  }
+
+  getMostCommentedContainerTemplate() {
+    createMostCommentedFilmContainerTemplate();
   }
 
   getTemplate() {
     return createMostCommentedFilmCardTemplate(this._task);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
+  setClickHandler() {
+    this._element.addEventListener(`click`, (filmCardClick) => {
+      if (filmCardClick.button === 0) {
+        let pressedFilmDetails = new FilmDetails(filmCardClick);
+        renderElement(siteBody, pressedFilmDetails.getElement(), RenderPosition.BEFOREEND);
+        const popupCloseButton = document.querySelector(`.film-details__close-btn`);
+        popupCloseButton.addEventListener(`mouseup`, (closeButtonClicked) => {
+          if (closeButtonClicked.button === 0) {
+            removeFilmDettails(pressedFilmDetails);
+            siteBody.classList.remove(`hide-overflow`);
+          }
+        }, {once: true});
 
-    return this._element;
+        window.addEventListener(`keydown`, (pressedKey) => {
+          if (pressedKey.key === `Escape`) {
+            removeFilmDettails(pressedFilmDetails);
+            siteBody.classList.remove(`hide-overflow`);
+          }
+        }, {once: true});
+
+        const commentsTitle = document.querySelector(`.film-details__comments-title`);
+        renderElement(commentsTitle, pressedFilmDetails.getComments(), RenderPosition.AFTEREND);
+      }
+    });
   }
 
-  removeElement() {
-    this._element = null;
-  }
 }

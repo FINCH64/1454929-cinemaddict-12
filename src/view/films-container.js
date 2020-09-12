@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import {createElement} from "./utils.js";
+import AbstractFilm from "../utils/utils.js";
 
 export const createFilmListsContainerTemplate = () => {
   return (
@@ -9,24 +9,10 @@ export const createFilmListsContainerTemplate = () => {
   );
 };
 
-export default class FilmsContainer {
-  constructor() {
-    this._element = null;
-  }
+export default class FilmsContainer extends AbstractFilm {
 
   getTemplate() {
     return createFilmListsContainerTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }

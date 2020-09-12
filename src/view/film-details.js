@@ -1,5 +1,5 @@
 import {testFilms} from "./film-test.js";
-import {createElement} from "./utils.js";
+import {createElement} from "../utils/utils.js";
 let popupData = [];
 export const siteBody = document.querySelector(`body`);
 export let readyComments = [];

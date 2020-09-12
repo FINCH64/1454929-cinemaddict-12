@@ -1,4 +1,4 @@
-import {createElement} from "./utils.js";
+import AbstractFilm from "../utils/utils.js";
 export const createAllMoviesBoardTemplate = () => {
   return (
     `<section class="films">
@@ -7,24 +7,11 @@ export const createAllMoviesBoardTemplate = () => {
   );
 };
 
-export default class AllFilmsBoard {
-  constructor() {
-    this._element = null;
-  }
+export default class AllFilmsBoard extends AbstractFilm {
 
   getTemplate() {
     return createAllMoviesBoardTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
-  }
 }
+
