@@ -18,9 +18,9 @@ export const createElement = (template) => {
 // то есть быть чем-то вроде <nav><a>Link 1</a><a>Link 2</a></nav>,
 // а не просто <a>Link 1</a><a>Link 2</a>
 
-export default class AbstractFilm {
+export default class DOMElementFunctions {
   constructor() {
-    if (new.target === AbstractFilm) {
+    if (new.target === DOMElementFunctions) {
       throw new Error(`Can't instantiate Abstract class, only concrete one.`);
     }
     this._element = null;

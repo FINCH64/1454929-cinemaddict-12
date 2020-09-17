@@ -1,6 +1,6 @@
 /* eslint-disable strict */
 import {testFilms} from "./film-test.js";
-import AbstractFilm from "../utils/utils.js";
+import DOMElementFunctions from "../utils/utils.js";
 import FilmDetails, {siteBody} from './film-details.js';
 import {renderElement, RenderPosition} from "../utils/render.js";
 import {removeFilmDettails} from '../main.js';
@@ -17,7 +17,10 @@ export const createTopRatedFilmsContainerTemplate = () => {
 };
 
 export const getDataByCardNumber = (cardNum) => {
-  return testFilms[cardNum];
+  if (cardNum !== undefined && cardNum !== null) {
+    return testFilms[cardNum];
+  }
+  return testFilms;
 };
 
 export const createTopRatedFilmCardTemplate = (filmCardData) => {
@@ -42,7 +45,7 @@ export const createTopRatedFilmCardTemplate = (filmCardData) => {
   );
 };
 
-export default class TopRatedFilm extends AbstractFilm {
+export default class TopRatedFilm extends DOMElementFunctions {
   constructor(task) {
     super();
     this._task = task;

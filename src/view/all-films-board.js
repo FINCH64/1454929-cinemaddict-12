@@ -1,4 +1,4 @@
-import AbstractFilm from "../utils/utils.js";
+import DOMElementFunctions from "../utils/utils.js";
 export const createAllMoviesBoardTemplate = () => {
   return (
     `<section class="films">
@@ -7,7 +7,7 @@ export const createAllMoviesBoardTemplate = () => {
   );
 };
 
-export default class AllFilmsBoard extends AbstractFilm {
+export default class AllFilmsBoard extends DOMElementFunctions {
 
   getTemplate() {
     return createAllMoviesBoardTemplate();

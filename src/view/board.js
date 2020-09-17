@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import AbstractFilm from "../utils/utils.js";
+import DOMElementFunctions from "../utils/utils.js";
 export const createBoardTemplate = () => {
   return (
     `<section class="films-list">
@@ -8,7 +8,7 @@ export const createBoardTemplate = () => {
   );
 };
 
-export default class FullBoard extends AbstractFilm {
+export default class FullBoard extends DOMElementFunctions {
 
   getTemplate() {
     return createBoardTemplate();

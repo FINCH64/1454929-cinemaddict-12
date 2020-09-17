@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import AbstractFilm from "../utils/utils.js";
+import DOMElementFunctions from "../utils/utils.js";
 import FilmDetails, {siteBody} from './film-details.js';
 import {renderElement, RenderPosition} from "../utils/render.js";
 import {removeFilmDettails} from '../main.js';
@@ -38,7 +38,7 @@ export const createMostCommentedFilmCardTemplate = (filmCardData) => {
   );
 };
 
-export default class MostCommentedFilm extends AbstractFilm {
+export default class MostCommentedFilm extends DOMElementFunctions {
 
   constructor(task) {
     super();

@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import AbstractFilm from "../utils/utils.js";
+import DOMElementFunctions from "../utils/utils.js";
 export const createUsersProfileTemplate = () => {
   return (
     `<section class="header__profile profile">
@@ -9,7 +9,7 @@ export const createUsersProfileTemplate = () => {
   );
 };
 
-export default class UserProfile extends AbstractFilm {
+export default class UserProfile extends DOMElementFunctions {
 
   getTemplate() {
     return createUsersProfileTemplate();

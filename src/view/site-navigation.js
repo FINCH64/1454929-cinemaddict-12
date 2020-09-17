@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import AbstractFilm from "../utils/utils.js";
+import DOMElementFunctions from "../utils/utils.js";
 export const createSiteNavigationTemplate = () => {
   return (
     `<nav class="main-navigation">
@@ -14,7 +14,7 @@ export const createSiteNavigationTemplate = () => {
   );
 };
 
-export default class SiteNavigation extends AbstractFilm {
+export default class SiteNavigation extends DOMElementFunctions {
   getTemplate() {
     return createSiteNavigationTemplate();
   }

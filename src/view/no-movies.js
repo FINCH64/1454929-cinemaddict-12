@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import AbstractFilm from "../utils/utils.js";
+import DOMElementFunctions from "../utils/utils.js";
 export const createNoMoviesMessage = () => {
   return (
     `<section class="films">
@@ -11,7 +11,7 @@ export const createNoMoviesMessage = () => {
   );
 };
 
-export default class NoMoviesMessage extends AbstractFilm {
+export default class NoMoviesMessage extends DOMElementFunctions {
 
   getTemplate() {
     return createNoMoviesMessage();

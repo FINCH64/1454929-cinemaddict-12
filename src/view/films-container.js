@@ -1,5 +1,5 @@
 /* eslint-disable strict */
-import AbstractFilm from "../utils/utils.js";
+import DOMElementFunctions from "../utils/utils.js";
 
 export const createFilmListsContainerTemplate = () => {
   return (
@@ -9,7 +9,7 @@ export const createFilmListsContainerTemplate = () => {
   );
 };
 
-export default class FilmsContainer extends AbstractFilm {
+export default class FilmsContainer extends DOMElementFunctions {
 
   getTemplate() {
     return createFilmListsContainerTemplate();
