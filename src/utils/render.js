@@ -14,5 +14,6 @@ export const renderElement = (container, element, place) => {
       break;
     case RenderPosition.AFTEREND:
       container.after(element);
+      break;
   }
 };
