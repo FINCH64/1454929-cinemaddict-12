@@ -28,37 +28,74 @@ const comments = [
     emoji: emojis[getRandomInteger(0, 3)],
     text: `a`,
     author: `James Cameron`,
-    date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
+    date: {
+      year: getRandomInteger(1980, 2020),
+      month: getRandomInteger(1, 12),
+      day: getRandomInteger(1, 28),
+      hour: getRandomInteger(0, 23),
+      minute: getRandomInteger(0, 59),
+    }
   },
+
   {
     emoji: emojis[getRandomInteger(0, 3)],
     text: `b`,
     author: `Someone else`,
-    date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
+    date: {
+      year: getRandomInteger(1980, 2020),
+      month: getRandomInteger(1, 12),
+      day: getRandomInteger(1, 28),
+      hour: getRandomInteger(0, 23),
+      minute: getRandomInteger(0, 59),
+    }
   },
   {
     emoji: emojis[getRandomInteger(0, 3)],
     text: `c`,
     author: `Stiven King`,
-    date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
+    date: {
+      year: getRandomInteger(1980, 2020),
+      month: getRandomInteger(1, 12),
+      day: getRandomInteger(1, 28),
+      hour: getRandomInteger(0, 23),
+      minute: getRandomInteger(0, 59),
+    }
   },
   {
     emoji: emojis[getRandomInteger(0, 3)],
     text: `d`,
     author: `William Shakespeare`,
-    date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
+    date: {
+      year: getRandomInteger(1980, 2020),
+      month: getRandomInteger(1, 12),
+      day: getRandomInteger(1, 28),
+      hour: getRandomInteger(0, 23),
+      minute: getRandomInteger(0, 59),
+    }
   },
   {
     emoji: emojis[getRandomInteger(0, 3)],
     text: `e`,
     author: `Jonathan Swift`,
-    date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
+    date: {
+      year: getRandomInteger(1980, 2020),
+      month: getRandomInteger(1, 12),
+      day: getRandomInteger(1, 28),
+      hour: getRandomInteger(0, 23),
+      minute: getRandomInteger(0, 59),
+    }
   },
   {
     emoji: emojis[getRandomInteger(0, 3)],
     text: `f`,
     author: `JENNIFER LAWRENCE`,
-    date: getRandomInteger(1, 29) + `/` + getRandomInteger(1, 12) + `/` + getRandomInteger(1990, 2020) + ` ` + getRandomInteger(0, 23) + `:` + getRandomInteger(0, 59),
+    date: {
+      year: getRandomInteger(1980, 2020),
+      month: getRandomInteger(1, 12),
+      day: getRandomInteger(1, 28),
+      hour: getRandomInteger(0, 23),
+      minute: getRandomInteger(0, 59),
+    }
   },
 ];
 
@@ -115,17 +152,22 @@ const generateProperty = (length, fullPropertyArray) => {
 
 
 export const generateFilmCard = () => {
-  let date = getRandomInteger(1990, 2020);
+  let year = getRandomInteger(1990, 2020);
+  let month = getRandomInteger(1, 12);
+  let day = getRandomInteger(1, 28);
   const filmName = keysForPosters[getRandomInteger(0, 6)];
   let filmComments = generateProperty(getRandomInteger(1, comments.length - 1), comments);
   return {
     name: filmName,
     poster: namesAndPosters.get(filmName),
     rating: getRandomInteger(0, 10),
-    releaseDate: date,
+    releaseDate: {
+      year,
+      month,
+      day,
+    },
     duration: {
-      hours: getRandomInteger(0, 2),
-      minutes: getRandomInteger(0, 60),
+      minutes: getRandomInteger(0, 150),
     },
     genre: generateProperty(getRandomInteger(1, genres.length - 1), genres),
     description: generateProperty(getRandomInteger(1, descriptions.length - 2), descriptions),
@@ -134,7 +176,7 @@ export const generateFilmCard = () => {
     director: `J.Weibe`,
     writers: generateProperty(getRandomInteger(0, writers.length - 1), writers),
     actors: generateProperty(getRandomInteger(1, actors.length - 1), actors),
-    fullReleaseDate: getRandomInteger(1, 29) + ` January ` + date,
+    fullReleaseDate: getRandomInteger(1, 29) + ` January ` + year,
     country: `Best country`,
     fullDescription: generateProperty(descriptions.length - 1, descriptions),
     comments: filmComments,

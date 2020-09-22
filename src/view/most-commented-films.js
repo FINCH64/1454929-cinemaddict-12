@@ -1,4 +1,5 @@
 /* eslint-disable strict */
+import moment from "moment";
 import DOMElementFunctions from "../utils/utils.js";
 import FilmDetails, {siteBody} from './film-details.js';
 import {renderElement, RenderPosition} from "../utils/render.js";
@@ -17,13 +18,16 @@ export const createMostCommentedFilmContainerTemplate = () => {
 
 
 export const createMostCommentedFilmCardTemplate = (filmCardData) => {
+  let hours = filmCardData.duration.minutes / 60;
+  let minutes = filmCardData.duration.minutes % 60;
+  let newDate = moment().year(filmCardData.releaseDate.year).month(filmCardData.releaseDate.month).date(filmCardData.releaseDate.day).hour(hours).minute(minutes);
   return (
     `<article class="film-card">
     <h3 class="film-card__title">` + filmCardData.name + `</h3>
     <p class="film-card__rating">` + filmCardData.rating + `</p>
     <p class="film-card__info">
-      <span class="film-card__year">` + filmCardData.releaseDate + `</span>
-      <span class="film-card__duration">` + filmCardData.duration.hours + `h` + filmCardData.duration.minutes + `m` + `</span>
+      <span class="film-card__year">` + newDate.format(`yyyy`) + `</span>
+      <span class="film-card__duration">` + newDate.format(`H`) + `h ` + newDate.format(`mm`) + `m` + `</span>
       <span class="film-card__genre">` + filmCardData.genre[0] + `</span>
     </p>
     <img src="` + filmCardData.poster + `" alt="" class="film-card__poster">

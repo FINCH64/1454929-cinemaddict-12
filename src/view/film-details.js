@@ -1,4 +1,6 @@
 import {testFilms} from "./film-test.js";
+import moment from "moment";
+
 import {createElement} from "../utils/utils.js";
 import Smart from "../utils/smart.js";
 import {renderElement, RenderPosition} from "../utils/render.js";
@@ -10,7 +12,21 @@ let popupData = [];
 export const siteBody = document.querySelector(`body`);
 export let readyComments = [];
 
+moment.locale(`en`, {
+  calendar: {
+    lastDay: `[Yesterday at] LT`,
+    sameDay: `[Today at] LT`,
+    nextDay: `[Tomorrow at] LT`,
+    lastWeek: `[last] dddd [at] LT`,
+    nextWeek: `dddd [at] LT`,
+    sameElse: `L HH:mm`
+  }
+});
+
 const createComments = (clickedFilmCard, num) => {
+  let commentsData = moment().year(popupData.comments[num].date.year).month(popupData.comments[num].date.month).date(popupData.comments[num].date.day).hour(popupData.comments[num].date.hour).minute(popupData.comments[num].date.minute);
+  let calendar = commentsData.calendar();
+
   return (
     `<li class="film-details__comment">
     <span class="film-details__comment-emoji">
@@ -20,7 +36,7 @@ const createComments = (clickedFilmCard, num) => {
       <p class="film-details__comment-text">` + popupData.comments[num].text + `</p>
       <p class="film-details__comment-info">
         <span class="film-details__comment-author">` + popupData.comments[num].author + `</span>
-        <span class="film-details__comment-day">` + popupData.comments[num].date + `</span>
+        <span class="film-details__comment-day">` + calendar + `</span>
         <button class="film-details__comment-delete">Delete</button>
       </p>
     </div>
@@ -95,6 +111,11 @@ export const createFilmDetailsTemplate = (clickedFilmCard) => {
       addedToFavorite = `checked`;
     }
 
+    let hours = popupData.duration.minutes / 60;
+    let minutes = popupData.duration.minutes % 60;
+    let newDate = moment().year(popupData.releaseDate.year).month(popupData.releaseDate.month).date(popupData.releaseDate.day).hour(hours).minute(minutes);
+
+
     return (
       `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -136,11 +157,11 @@ export const createFilmDetailsTemplate = (clickedFilmCard) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
-              <td class="film-details__cell">` + popupData.releaseDate + `</td>
+              <td class="film-details__cell">` + newDate.format(`DD MMMM yyyy`) + `</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">` + popupData.duration.hours + `h ` + popupData.duration.minutes + `m` + `</td>
+              <td class="film-details__cell">` + newDate.format(`H`) + `h ` + newDate.format(`mm`) + `m` + `</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
