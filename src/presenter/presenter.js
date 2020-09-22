@@ -1,4 +1,4 @@
-
+import FilmsDetails from "./film-details-presenter.js";
 import {sortFilterSwitch} from '../view/sort.js';
 import {renderTemplate} from '../utils/utils.js';
 import {renderElement, RenderPosition} from '../utils/render.js';
@@ -17,6 +17,29 @@ import NoMoviesMessage from '../view/no-movies.js';
 const siteHeaderElement = document.querySelector(`.header`);
 let oldData = [];
 
+export const Observer = {
+  _observers: [],
+  addObserver(newObserver) {
+    this._observers.push(newObserver);
+  },
+  removeObserver(observer) {
+    this._observers = this._observers
+      .filter((observerInStock) => observerInStock !== observer);
+  },
+  notify() {
+    this._observers.forEach((observer) => observer());
+  }
+};
+
+const closeAllDetails = () => {
+  let filmDetails = document.querySelectorAll(`.film-details`);
+  for (let film of filmDetails) {
+    film.remove();
+  }
+};
+
+Observer.addObserver(closeAllDetails);
+
 export default class MovieList {
   constructor() {
     this._allData = [];
@@ -28,6 +51,7 @@ export default class MovieList {
     this._filmsContainer = new FilmsContainer();
     this._loadMoreButton = new LoadMore();
     this._noMovieState = new NoMoviesMessage();
+    this._filteredFilms = getDataByCardNumber();
     this._filmData = ``;
     this._siteFilmListsContainer = ``;
     this._films = ``;
@@ -41,6 +65,7 @@ export default class MovieList {
       switch (clickedFilter.path[0].id) {
         case `default1`:
           filteredFilms = allData.slice();
+          this._filteredFilms = filteredFilms;
           this._loadMoreButton.getElement().remove();
           this._loadMoreButton.removeElement();
           this.renderLoadMoreButton(`withoutFilters`);
@@ -116,6 +141,13 @@ export default class MovieList {
       this._cardAllFilmsElement = new Film(this._filmData);
       this._siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
       renderElement(this._siteFilmListsContainer[0], this._cardAllFilmsElement.getElement(), RenderPosition.BEFOREEND);
+      let controlContainer = this._cardAllFilmsElement.getElement();
+      this._addToWatchlistButton = controlContainer.querySelector(`.film-card__controls-item--add-to-watchlist`);
+      this._alreadyWatchedButton = controlContainer.querySelector(`.film-card__controls-item--mark-as-watched`);
+      this._markAsFavoriteButton = controlContainer.querySelector(`.film-card__controls-item--favorite`);
+      this.addToWatchlistClickHandler();
+      this.markAsFavoriteClickHandler();
+      this.alreadyWatchedClickHandler();
       this._cardAllFilmsElement.setClickHandler();
     }
   }
@@ -186,8 +218,15 @@ export default class MovieList {
       allFilmsCounter++;
       if (countOfRenderedFilms(allFilmsCounter) === true) {
         this._filmData = getDataByCardNumber(allFilmsCounter);
-        this._cardAllFilmsElement = new Film(newData[allFilmsCounter]);
-        renderElement(this._siteFilmListsContainer[0], this._cardAllFilmsElement.getElement(), RenderPosition.BEFOREEND);
+        this._cardAllFilmsElement = new FilmsDetails(newData[allFilmsCounter]);
+        renderElement(this._siteFilmListsContainer[0], this._cardAllFilmsElement._filmDetails, RenderPosition.BEFOREEND);
+        let controlContainer = this._cardAllFilmsElement._filmDetails;
+        this._addToWatchlistButton = controlContainer.querySelector(`.film-card__controls-item--add-to-watchlist`);
+        this._alreadyWatchedButton = controlContainer.querySelector(`.film-card__controls-item--mark-as-watched`);
+        this._markAsFavoriteButton = controlContainer.querySelector(`.film-card__controls-item--favorite`);
+        this.alreadyWatchedClickHandler();
+        this.addToWatchlistClickHandler();
+        this.markAsFavoriteClickHandler();
         this._cardAllFilmsElement.setClickHandler();
       } else {
         this._loadMoreButton.getElement().remove();
@@ -197,7 +236,7 @@ export default class MovieList {
       }
     }
     oldData = newData;
-    renderElement(this._siteFilmListsContainer[0], this._cardAllFilmsElement.getElement(), RenderPosition.BEFOREEND);
+    renderElement(this._siteFilmListsContainer[0], this._cardAllFilmsElement._filmDetails, RenderPosition.BEFOREEND);
     this._cardAllFilmsElement.setClickHandler();
   }
 
@@ -227,6 +266,94 @@ export default class MovieList {
     // this._loadMoreButton.getElement().addEventListener(`mousedown`, () => {
     //   this._loadNewFilms(getDataByCardNumber());
     // });
+  }
+
+  alreadyWatchedClickHandler() {
+    this._alreadyWatchedButton.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this.updateAlreadyWatched(evt);
+    });
+  }
+
+  addToWatchlistClickHandler() {
+    this._addToWatchlistButton.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this.updateAddedToWatchListFilm(evt);
+    });
+  }
+
+  markAsFavoriteClickHandler() {
+    this._markAsFavoriteButton.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this.updateAddedToFavoriteFilm(evt);
+    });
+  }
+
+  updateAddedToWatchListFilm(evt) {
+    this._findFilmByName(evt);
+
+    this._addToWatchlistButton = evt.path[0];
+    if (this._filmData.addedToWatchList === false || this._filmData.addedToWatchList === undefined) {
+      this._filmData.addedToWatchList = true;
+      this._addToWatchlistButton.classList.add(`film-card__controls-item--active`);
+    } else if (this._filmData.addedToWatchList === true) {
+      this._filmData.addedToWatchList = false;
+      this._addToWatchlistButton.classList.remove(`film-card__controls-item--active`);
+    }
+
+  }
+
+  updateAddedToFavoriteFilm(evt) {
+    this._findFilmByName(evt);
+    this._markAsFavoriteButton = evt.path[0];
+    if (this._filmData.addedToFavorite === false || this._filmData.addedToFavorite === undefined) {
+      this._filmData.addedToFavorite = true;
+      this._markAsFavoriteButton.classList.add(`film-card__controls-item--active`);
+    } else if (this._filmData.addedToFavorite === true) {
+      this._filmData.addedToFavorite = false;
+      this._markAsFavoriteButton.classList.remove(`film-card__controls-item--active`);
+    }
+  }
+
+  updateAlreadyWatched(evt) {
+    this._findFilmByName(evt);
+    this._alreadyWatchedButton = evt.path[0];
+    if (this._filmData.alreadyWatched === false || this._filmData.alreadyWatched === undefined) {
+      this._filmData.alreadyWatched = true;
+      this._alreadyWatchedButton.classList.add(`film-card__controls-item--active`);
+    } else if (this._filmData.alreadyWatched === true) {
+      this._filmData.alreadyWatched = false;
+      this._alreadyWatchedButton.classList.remove(`film-card__controls-item--active`);
+    }
+  }
+
+  rerenderCard() {
+    this._filmData.removeElement();
+  }
+
+  _findFilmByName(clickedFilmCard) {
+    let filmName = ``;
+    if (clickedFilmCard.path[1].querySelector(`form`)) {
+      filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
+
+      for (let testFilm of this._filteredFilms) {
+        if (testFilm.name === filmName) {
+          this._filmData = testFilm;
+          break;
+        }
+        continue;
+      }
+    } else if (clickedFilmCard.path[2].querySelector(`form`)) {
+      filmName = clickedFilmCard.path[2].querySelector(`.film-card__title`).textContent;
+
+      for (let testFilm of this._filteredFilms) {
+        if (testFilm.name === filmName) {
+          this._filmData = testFilm;
+          break;
+        }
+        continue;
+      }
+    }
   }
 }
 

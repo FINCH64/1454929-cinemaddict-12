@@ -1,5 +1,11 @@
 import {testFilms} from "./film-test.js";
 import {createElement} from "../utils/utils.js";
+import Smart from "../utils/smart.js";
+import {renderElement, RenderPosition} from "../utils/render.js";
+import {siteMainElement} from "../presenter/presenter.js";
+import Film from "./films-template.js";
+import {getDataByCardNumber} from "./top-rated-films.js";
+
 let popupData = [];
 export const siteBody = document.querySelector(`body`);
 export let readyComments = [];
@@ -25,50 +31,72 @@ const createComments = (clickedFilmCard, num) => {
 const getReadyComments = (clickedFilmCard) => {
   readyComments = [];
   readyComments.unshift(`</ul>`);
-  let filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
-  for (let testFilm of testFilms) {
-    if (testFilm.name === filmName) {
-      popupData = testFilm;
-      break;
+  let filmName = ``;
+  if (clickedFilmCard.path[1].querySelector(`form`)) {
+    filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
+    for (let testFilm of testFilms) {
+      if (testFilm.name === filmName) {
+        popupData = testFilm;
+        break;
+      }
+      continue;
     }
-    continue;
-  }
 
-  for (let unshiftingComment = 0; unshiftingComment < popupData.commentsCount; unshiftingComment++) {
-    readyComments.unshift(createComments(filmName, unshiftingComment));
+    for (let unshiftingComment = 0; unshiftingComment < popupData.commentsCount; unshiftingComment++) {
+      readyComments.unshift(createComments(filmName, unshiftingComment));
+    }
+    readyComments.unshift(`<ul class="film-details__comments-list">`);
+    return (
+      readyComments.reduce((sum, current) => sum + ` \n\ ` + current)
+    );
   }
-  readyComments.unshift(`<ul class="film-details__comments-list">`);
-  return (
-    readyComments.reduce((sum, current) => sum + ` \n\ ` + current)
-  );
+  return (``);
 };
 
 export const createFilmDetailsTemplate = (clickedFilmCard) => {
-  let filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
-  for (let testFilm of testFilms) {
-    if (testFilm.name === filmName) {
-      popupData = testFilm;
-      break;
+  let filmName = ``;
+  if (clickedFilmCard.path[1].querySelector(`form`)) {
+    filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
+
+    for (let testFilm of testFilms) {
+      if (testFilm.name === filmName) {
+
+        popupData = testFilm;
+        break;
+      }
+      continue;
     }
-    continue;
-  }
-  siteBody.classList.add(`hide-overflow`);
+    siteBody.classList.add(`hide-overflow`);
+    let genresCounter = `genre`;
+    if (popupData.genre.length > 1) {
+      genresCounter = `genres`;
+    } else {
+      genresCounter = `genre`;
+    }
 
-  let genresCounter = `genre`;
-  if (popupData.genre.length > 1) {
-    genresCounter = `genres`;
-  } else {
-    genresCounter = `genre`;
-  }
+    let genresFragment = ``;
 
-  let genresFragment = ``;
+    for (let genre of popupData.genre) {
+      genresFragment += `<span class="film-details__genre">` + genre + `</span>`;
+    }
+    let alreadyWatched = ``;
+    let addedToWatchlist = ``;
+    let addedToFavorite = ``;
 
-  for (let genre of popupData.genre) {
-    genresFragment += `<span class="film-details__genre">` + genre + `</span>`;
-  }
+    if (popupData.alreadyWatched === true) {
+      alreadyWatched = `checked`;
+    }
 
-  return (
-    `<section class="film-details">
+    if (popupData.addedToWatchList === true) {
+      addedToWatchlist = `checked`;
+    }
+
+    if (popupData.addedToFavorite === true) {
+      addedToFavorite = `checked`;
+    }
+
+    return (
+      `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
     <div class="form-details__top-container">
       <div class="film-details__close">
@@ -132,13 +160,13 @@ export const createFilmDetailsTemplate = (clickedFilmCard) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist"` + addedToWatchlist + `>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched"` + alreadyWatched + `>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite"` + addedToFavorite + `>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
@@ -181,11 +209,14 @@ export const createFilmDetailsTemplate = (clickedFilmCard) => {
     </div>
   </form>
 </section> `
-  );
+    );
+  }
+  return (1);
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends Smart {
   constructor(clickedCard) {
+    super();
     this._clickedFilm = clickedCard;
     this._filmData = null;
     this._comment = null;
@@ -193,6 +224,28 @@ export default class FilmDetails {
 
   getDetailsTemplate() {
     return createFilmDetailsTemplate(this._clickedFilm);
+  }
+
+  restoreHandlers() {
+    const popupCloseButton = document.querySelector(`.film-details__close-btn`);
+    popupCloseButton.addEventListener(`mouseup`, (closeButtonClicked) => {
+
+      if (closeButtonClicked.button === 0) {
+        this.removeElement();
+        siteBody.classList.remove(`hide-overflow`);
+      }
+    }, {once: true});
+
+    window.addEventListener(`keydown`, (pressedKey) => {
+      if (pressedKey.key === `Escape`) {
+        this.removeElement();
+        siteBody.classList.remove(`hide-overflow`);
+
+      }
+    }, {once: true});
+    this.alreadyWatchedClickHandler();
+    this.addToWatchlistClickHandler();
+    this.markAsFavouriteClickHandler();
   }
 
   getElement() {
@@ -208,7 +261,9 @@ export default class FilmDetails {
   }
 
   getComments() {
-    this._comment = createElement(this.getCommentsTemplate());
+    if (!this._comment) {
+      this._comment = createElement(this.getCommentsTemplate());
+    }
     return this._comment;
   }
 
@@ -216,8 +271,108 @@ export default class FilmDetails {
     this._clickedFilm = null;
     this._filmData = null;
     this._comment = null;
-    let filmDetails = document.querySelector(`.film-details`);
-    filmDetails.remove();
+    this._filmDetails = document.querySelector(`.film-details`);
+    this._filmDetails.remove();
+  }
+
+  updateFilm(clickedFilm) {
+    clickedFilm.path[1].remove();
+    let filmsContainer = siteMainElement.querySelector(`.films-list__container`);
+    this._renewedFilm = new Film(popupData);
+    renderElement(filmsContainer, this._renewedFilm.getElement(), RenderPosition.BEFOREEND);
+    this._renewedFilm.setClickHandler();
+    let controlContainer = this._renewedFilm.getElement().querySelector(`.film-card__controls`);
+    this._addToWatchlistButton = controlContainer.querySelector(`.film-card__controls-item--add-to-watchlist`);
+    this._alreadyWatchedButton = controlContainer.querySelector(`.film-card__controls-item--mark-as-watched`);
+    this._markAsFavoriteButton = controlContainer.querySelector(`.film-card__controls-item--favorite`);
+    this.alreadyWatchedClickHandler();
+    this.addToWatchlistClickHandler();
+    this.markAsFavoriteClickHandler();
+  }
+
+  alreadyWatchedClickHandler() {
+    this._alreadyWatchedButton.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this.updateAlreadyWatched(evt);
+    });
+  }
+
+  addToWatchlistClickHandler() {
+    this._addToWatchlistButton.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this.updateAddedToWatchListFilm(evt);
+    });
+  }
+
+  markAsFavoriteClickHandler() {
+    this._markAsFavoriteButton.addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+      this.updateAddedToFavoriteFilm(evt);
+    });
+  }
+
+  updateAddedToWatchListFilm(evt) {
+    this._findFilmByName(evt);
+
+    this._addToWatchlistButton = evt.path[0];
+    if (this._filmData.addedToWatchList === false || this._filmData.addedToWatchList === undefined) {
+      this._filmData.addedToWatchList = true;
+      this._addToWatchlistButton.classList.add(`film-card__controls-item--active`);
+    } else if (this._filmData.addedToWatchList === true) {
+      this._filmData.addedToWatchList = false;
+      this._addToWatchlistButton.classList.remove(`film-card__controls-item--active`);
+    }
+
+  }
+
+  updateAddedToFavoriteFilm(evt) {
+    this._findFilmByName(evt);
+    this._markAsFavoriteButton = evt.path[0];
+    if (this._filmData.addedToFavorite === false || this._filmData.addedToFavorite === undefined) {
+      this._filmData.addedToFavorite = true;
+      this._markAsFavoriteButton.classList.add(`film-card__controls-item--active`);
+    } else if (this._filmData.addedToFavorite === true) {
+      this._filmData.addedToFavorite = false;
+      this._markAsFavoriteButton.classList.remove(`film-card__controls-item--active`);
+    }
+  }
+
+  updateAlreadyWatched(evt) {
+    this._findFilmByName(evt);
+    this._alreadyWatchedButton = evt.path[0];
+    if (this._filmData.alreadyWatched === false || this._filmData.alreadyWatched === undefined) {
+      this._filmData.alreadyWatched = true;
+      this._alreadyWatchedButton.classList.add(`film-card__controls-item--active`);
+    } else if (this._filmData.alreadyWatched === true) {
+      this._filmData.alreadyWatched = false;
+      this._alreadyWatchedButton.classList.remove(`film-card__controls-item--active`);
+    }
+  }
+
+  _findFilmByName(clickedFilmCard) {
+    let allFilms = getDataByCardNumber();
+    let filmName = ``;
+    if (clickedFilmCard.path[1].querySelector(`form`)) {
+      filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
+
+      for (let testFilm of allFilms) {
+        if (testFilm.name === filmName) {
+          this._filmData = testFilm;
+          break;
+        }
+        continue;
+      }
+    } else if (clickedFilmCard.path[2].querySelector(`form`)) {
+      filmName = clickedFilmCard.path[2].querySelector(`.film-card__title`).textContent;
+
+      for (let testFilm of allFilms) {
+        if (testFilm.name === filmName) {
+          this._filmData = testFilm;
+          break;
+        }
+        continue;
+      }
+    }
   }
 }
 

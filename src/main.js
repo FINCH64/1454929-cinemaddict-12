@@ -1,6 +1,6 @@
 /* eslint-disable strict */
 import MovieList from './presenter/presenter.js';
-let movieList = new MovieList();
+export let movieList = new MovieList();
 movieList.renderUserProfile();
 movieList.renderSiteNavigation();
 movieList.renderFilmsFilters();
