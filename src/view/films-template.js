@@ -4,8 +4,7 @@ import DOMElementFunctions from "../utils/utils.js";
 import FilmDetails, {siteBody} from './film-details.js';
 import {renderElement, RenderPosition} from "../utils/render.js";
 import {removeFilmDettails} from '../main.js';
-import {getDataByCardNumber} from "./top-rated-films.js";
-import {Observer} from "../presenter/presenter.js";
+import {Observer, database, allFilmsCounter} from "../presenter/presenter.js";
 export let stopFlag = false;
 export const countOfRenderedFilms = (counter) => {
   if (counter >= 18) {
@@ -197,7 +196,8 @@ export default class Film extends DOMElementFunctions {
 
   _findFilmByName(clickedFilmCard) {
     let filmName = ``;
-    let allFilms = getDataByCardNumber();
+    let allFilms = database;
+    console.log(allFilms);
     if (clickedFilmCard.path[1].querySelector(`form`)) {
       filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
 

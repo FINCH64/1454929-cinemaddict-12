@@ -3,7 +3,7 @@ import {sortFilterSwitch} from '../view/sort.js';
 import {renderTemplate} from '../utils/utils.js';
 import {renderElement, RenderPosition} from '../utils/render.js';
 import MostCommentedFilm, {createMostCommentedFilmContainerTemplate} from '../view/most-commented-films.js';
-import TopRatedFilm, {getDataByCardNumber, createTopRatedFilmsContainerTemplate} from '../view/top-rated-films.js';
+import TopRatedFilm, {createTopRatedFilmsContainerTemplate} from '../view/top-rated-films.js';
 import Film, {countOfRenderedFilms} from '../view/films-template.js';
 import UserProfile from '../view/user-profile.js';
 import SiteNavigation from '../view/site-navigation.js';
@@ -13,7 +13,7 @@ import FilmsContainer from '../view/films-container.js';
 import FilmsFilters from '../view/film-filters.js';
 import AllFilmsBoard from '../view/all-films-board.js';
 import NoMoviesMessage from '../view/no-movies.js';
-
+export let database = ``;
 const siteHeaderElement = document.querySelector(`.header`);
 let oldData = [];
 
@@ -41,8 +41,8 @@ const closeAllDetails = () => {
 Observer.addObserver(closeAllDetails);
 
 export default class MovieList {
-  constructor() {
-    this._allData = [];
+  constructor(filmsModel) {
+    this._allData = filmsModel;
     this._board = new FullBoard();
     this._allFilmsBoard = new AllFilmsBoard();
     this._userProfile = new UserProfile();
@@ -51,20 +51,32 @@ export default class MovieList {
     this._filmsContainer = new FilmsContainer();
     this._loadMoreButton = new LoadMore();
     this._noMovieState = new NoMoviesMessage();
-    this._filteredFilms = getDataByCardNumber();
+    this._filteredFilms = ``;
     this._filmData = ``;
     this._siteFilmListsContainer = ``;
     this._films = ``;
   }
 
+  getDataByCardNumber(cardNum) {
+    let data = this._allData.getMovies();
+    if (cardNum !== undefined && cardNum !== null) {
+      return data[cardNum];
+    }
+    return data;
+  }
+
+  init() {
+    database = this._allData.getMovies().slice();
+  }
+
   activateSort() {
     sortFilterSwitch();
     const changeFilmsArrayForFilter = (clickedFilter) => {
-      let allData = getDataByCardNumber();
       let filteredFilms = [];
       switch (clickedFilter.path[0].id) {
         case `default1`:
-          filteredFilms = allData.slice();
+          filteredFilms = this._allData.getMovies().slice();
+          console.log(filteredFilms);
           this._filteredFilms = filteredFilms;
           this._loadMoreButton.getElement().remove();
           this._loadMoreButton.removeElement();
@@ -72,9 +84,8 @@ export default class MovieList {
           break;
         case `rating`:
           let oldFilmRating = -1;
-          allData = getDataByCardNumber();
-          let mappedRatingData = allData.slice();
-          for (let counter = 0; counter < allData.length; counter++) {
+          let mappedRatingData = this._allData.getMovies().slice();
+          for (let counter = 0; counter < this._allData.getMovies().length; counter++) {
             let maxRatedFilm = [];
             oldFilmRating = -1;
             for (let film of mappedRatingData) {
@@ -95,17 +106,15 @@ export default class MovieList {
           break;
         case `date`:
           let oldFilmDate = -1;
-          allData = getDataByCardNumber();
-          let mappedForDateData = allData.slice();
-          for (let counter = 0; counter < allData.length; counter++) {
+          let mappedForDateData = this._allData.getMovies().slice();
+          for (let counter = 0; counter < this._allData.getMovies().length; counter++) {
             let oldestFilm = [];
             oldFilmDate = -1;
             for (let film of mappedForDateData) {
-              if (film.releaseDate > oldFilmDate || oldFilmDate === -1) {
-                oldFilmDate = film.releaseDate;
+              if (film.releaseDate.year > oldFilmDate || oldFilmDate === -1) {
+                oldFilmDate = film.releaseDate.year;
                 oldestFilm = [];
                 oldestFilm.push(film);
-
               }
             }
             mappedForDateData.splice(mappedForDateData.indexOf(oldestFilm[0]), 1);
@@ -136,9 +145,9 @@ export default class MovieList {
   renderSuggestedFilms() {
     for (let renderedFilm = 0; renderedFilm < FILM_LISTS_COUNT; renderedFilm++) {
       allFilmsCounter++;
-      this._filmData = getDataByCardNumber(allFilmsCounter);
-      this._allData.unshift(this._filmData);
+      this._filmData = this.getDataByCardNumber(allFilmsCounter);
       this._cardAllFilmsElement = new Film(this._filmData);
+      console.log(this._filmData);
       this._siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
       renderElement(this._siteFilmListsContainer[0], this._cardAllFilmsElement.getElement(), RenderPosition.BEFOREEND);
       let controlContainer = this._cardAllFilmsElement.getElement();
@@ -158,7 +167,7 @@ export default class MovieList {
     this._siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
     for (let renderedRatedFilm = 0; renderedRatedFilm < MAX_EXTRA_FILMS; renderedRatedFilm++) {
       topRatedFilmsCounter++;
-      this._filmData = getDataByCardNumber(topRatedFilmsCounter);
+      this._filmData = this.getDataByCardNumber(topRatedFilmsCounter);
       let cardTopRatedFilmsElement = new TopRatedFilm(this._filmData);
       this._siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
       renderElement(this._siteFilmListsContainer[2], cardTopRatedFilmsElement.getElement(), RenderPosition.BEFOREEND);
@@ -172,12 +181,16 @@ export default class MovieList {
 
     for (let renderedCommentedFilm = 0; renderedCommentedFilm < MAX_EXTRA_FILMS; renderedCommentedFilm++) {
       MostCommentedFilmsCounter++;
-      this._filmData = getDataByCardNumber(MostCommentedFilmsCounter);
+      this._filmData = this.getDataByCardNumber(MostCommentedFilmsCounter);
       let cardMostCommentedFilmsElement = new MostCommentedFilm(this._filmData);
       this._siteFilmListsContainer = siteMainElement.querySelectorAll(`.films-list__container`);
       renderElement(this._siteFilmListsContainer[1], cardMostCommentedFilmsElement.getElement(), RenderPosition.BEFOREEND);
       cardMostCommentedFilmsElement.setClickHandler();
     }
+  }
+
+  _getMovies() {
+    return this._filteredFilms.getMovies();
   }
 
   renderNoFilmsState() {
@@ -217,7 +230,7 @@ export default class MovieList {
     for (let i = 0; i < 5; i++) {
       allFilmsCounter++;
       if (countOfRenderedFilms(allFilmsCounter) === true) {
-        this._filmData = getDataByCardNumber(allFilmsCounter);
+        this._filmData = this.getDataByCardNumber(allFilmsCounter);
         this._cardAllFilmsElement = new FilmsDetails(newData[allFilmsCounter]);
         renderElement(this._siteFilmListsContainer[0], this._cardAllFilmsElement._filmDetails, RenderPosition.BEFOREEND);
         let controlContainer = this._cardAllFilmsElement._filmDetails;
@@ -247,19 +260,21 @@ export default class MovieList {
         this._loadMoreButton.getElement().addEventListener(`mouseup`, () => {
           this._loadNewFilms(this._filteredFilms);
         });
+        console.log(this._filteredFilms);
         this._loadNewFilms(this._filteredFilms);
         break;
       case `withoutFilters`:
         renderElement(this._siteFilmListsContainer[0], this._loadMoreButton.getElement(), `afterend`);
         this._loadMoreButton.getElement().addEventListener(`mouseup`, () => {
-          this._loadNewFilms(getDataByCardNumber());
+          this._loadNewFilms(this.getDataByCardNumber());
         });
-        this._loadNewFilms(getDataByCardNumber());
+        console.log(this.getDataByCardNumber());
+        this._loadNewFilms(this.getDataByCardNumber());
         break;
       default:
         renderElement(this._allFilmsBoard.getElement(), this._loadMoreButton.getElement(), `beforeend`);
         this._loadMoreButton.getElement().addEventListener(`mouseup`, () => {
-          this._loadNewFilms(getDataByCardNumber());
+          this._loadNewFilms(this.getDataByCardNumber());
         });
         break;
     }
@@ -271,90 +286,66 @@ export default class MovieList {
   alreadyWatchedClickHandler() {
     this._alreadyWatchedButton.addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this.updateAlreadyWatched(evt);
+      this._allData.updateAlreadyWatched(evt);
     });
   }
 
   addToWatchlistClickHandler() {
     this._addToWatchlistButton.addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this.updateAddedToWatchListFilm(evt);
+      this._allData.updateAddedToWatchListFilm(evt);
     });
   }
 
   markAsFavoriteClickHandler() {
     this._markAsFavoriteButton.addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      this.updateAddedToFavoriteFilm(evt);
+      this._allData.updateAddedToFavoriteFilm(evt);
     });
   }
 
-  updateAddedToWatchListFilm(evt) {
-    this._findFilmByName(evt);
+  // updateAddedToWatchListFilm(evt) {
+  //   this._findFilmByName(evt);
 
-    this._addToWatchlistButton = evt.path[0];
-    if (this._filmData.addedToWatchList === false || this._filmData.addedToWatchList === undefined) {
-      this._filmData.addedToWatchList = true;
-      this._addToWatchlistButton.classList.add(`film-card__controls-item--active`);
-    } else if (this._filmData.addedToWatchList === true) {
-      this._filmData.addedToWatchList = false;
-      this._addToWatchlistButton.classList.remove(`film-card__controls-item--active`);
-    }
+  //   this._addToWatchlistButton = evt.path[0];
+  //   if (this._filmData.addedToWatchList === false || this._filmData.addedToWatchList === undefined) {
+  //     this._filmData.addedToWatchList = true;
+  //     this._addToWatchlistButton.classList.add(`film-card__controls-item--active`);
+  //   } else if (this._filmData.addedToWatchList === true) {
+  //     this._filmData.addedToWatchList = false;
+  //     this._addToWatchlistButton.classList.remove(`film-card__controls-item--active`);
+  //   }
 
-  }
+  // }
 
-  updateAddedToFavoriteFilm(evt) {
-    this._findFilmByName(evt);
-    this._markAsFavoriteButton = evt.path[0];
-    if (this._filmData.addedToFavorite === false || this._filmData.addedToFavorite === undefined) {
-      this._filmData.addedToFavorite = true;
-      this._markAsFavoriteButton.classList.add(`film-card__controls-item--active`);
-    } else if (this._filmData.addedToFavorite === true) {
-      this._filmData.addedToFavorite = false;
-      this._markAsFavoriteButton.classList.remove(`film-card__controls-item--active`);
-    }
-  }
+  // updateAddedToFavoriteFilm(evt) {
+  //   this._findFilmByName(evt);
+  //   this._markAsFavoriteButton = evt.path[0];
+  //   if (this._filmData.addedToFavorite === false || this._filmData.addedToFavorite === undefined) {
+  //     this._filmData.addedToFavorite = true;
+  //     this._markAsFavoriteButton.classList.add(`film-card__controls-item--active`);
+  //   } else if (this._filmData.addedToFavorite === true) {
+  //     this._filmData.addedToFavorite = false;
+  //     this._markAsFavoriteButton.classList.remove(`film-card__controls-item--active`);
+  //   }
+  // }
 
-  updateAlreadyWatched(evt) {
-    this._findFilmByName(evt);
-    this._alreadyWatchedButton = evt.path[0];
-    if (this._filmData.alreadyWatched === false || this._filmData.alreadyWatched === undefined) {
-      this._filmData.alreadyWatched = true;
-      this._alreadyWatchedButton.classList.add(`film-card__controls-item--active`);
-    } else if (this._filmData.alreadyWatched === true) {
-      this._filmData.alreadyWatched = false;
-      this._alreadyWatchedButton.classList.remove(`film-card__controls-item--active`);
-    }
-  }
+  // updateAlreadyWatched(evt) {
+  //   this._findFilmByName(evt);
+  //   this._alreadyWatchedButton = evt.path[0];
+  //   if (this._filmData.alreadyWatched === false || this._filmData.alreadyWatched === undefined) {
+  //     this._filmData.alreadyWatched = true;
+  //     this._alreadyWatchedButton.classList.add(`film-card__controls-item--active`);
+  //   } else if (this._filmData.alreadyWatched === true) {
+  //     this._filmData.alreadyWatched = false;
+  //     this._alreadyWatchedButton.classList.remove(`film-card__controls-item--active`);
+  //   }
+  // }
 
   rerenderCard() {
     this._filmData.removeElement();
   }
 
-  _findFilmByName(clickedFilmCard) {
-    let filmName = ``;
-    if (clickedFilmCard.path[1].querySelector(`form`)) {
-      filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;
-
-      for (let testFilm of this._filteredFilms) {
-        if (testFilm.name === filmName) {
-          this._filmData = testFilm;
-          break;
-        }
-        continue;
-      }
-    } else if (clickedFilmCard.path[2].querySelector(`form`)) {
-      filmName = clickedFilmCard.path[2].querySelector(`.film-card__title`).textContent;
-
-      for (let testFilm of this._filteredFilms) {
-        if (testFilm.name === filmName) {
-          this._filmData = testFilm;
-          break;
-        }
-        continue;
-      }
-    }
-  }
 }
 
 export const FILM_LISTS_COUNT = 5;

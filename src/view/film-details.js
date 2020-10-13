@@ -4,9 +4,8 @@ import moment from "moment";
 import {createElement} from "../utils/utils.js";
 import Smart from "../utils/smart.js";
 import {renderElement, RenderPosition} from "../utils/render.js";
-import {siteMainElement} from "../presenter/presenter.js";
+import {siteMainElement, database} from "../presenter/presenter.js";
 import Film from "./films-template.js";
-import {getDataByCardNumber} from "./top-rated-films.js";
 
 let popupData = [];
 export const siteBody = document.querySelector(`body`);
@@ -254,6 +253,7 @@ export default class FilmDetails extends Smart {
       if (closeButtonClicked.button === 0) {
         this.removeElement();
         siteBody.classList.remove(`hide-overflow`);
+        this.updateFilm(this._clickedFilm);
       }
     }, {once: true});
 
@@ -261,7 +261,7 @@ export default class FilmDetails extends Smart {
       if (pressedKey.key === `Escape`) {
         this.removeElement();
         siteBody.classList.remove(`hide-overflow`);
-
+        this.updateFilm(this._clickedFilm);
       }
     }, {once: true});
     this.alreadyWatchedClickHandler();
@@ -371,7 +371,7 @@ export default class FilmDetails extends Smart {
   }
 
   _findFilmByName(clickedFilmCard) {
-    let allFilms = getDataByCardNumber();
+    let allFilms = database;
     let filmName = ``;
     if (clickedFilmCard.path[1].querySelector(`form`)) {
       filmName = clickedFilmCard.path[1].querySelector(`.film-card__title`).textContent;

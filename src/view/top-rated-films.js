@@ -5,6 +5,15 @@ import DOMElementFunctions from "../utils/utils.js";
 import FilmDetails, {siteBody} from './film-details.js';
 import {renderElement, RenderPosition} from "../utils/render.js";
 import {removeFilmDettails} from '../main.js';
+
+export const getDataByCardNumber = (cardNum) => {
+  let data = testFilms;
+  if (cardNum !== undefined && cardNum !== null) {
+    return data[cardNum];
+  }
+  return data;
+};
+
 export const createTopRatedFilmsContainerTemplate = () => {
   return (
     `<section class="films-list--extra">
@@ -17,12 +26,6 @@ export const createTopRatedFilmsContainerTemplate = () => {
   );
 };
 
-export const getDataByCardNumber = (cardNum) => {
-  if (cardNum !== undefined && cardNum !== null) {
-    return testFilms[cardNum];
-  }
-  return testFilms;
-};
 
 export const createTopRatedFilmCardTemplate = (filmCardData) => {
   let hours = filmCardData.duration.minutes / 60;
